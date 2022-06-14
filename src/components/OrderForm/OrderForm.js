@@ -7,7 +7,7 @@ class OrderForm extends Component {
     this.state = {
       name: '',
       ingredients: [],
-      error:false
+      error:""
     };
   }
 
@@ -15,11 +15,11 @@ class OrderForm extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if(this.state.name && this.state.ingredients.length) {
-      this.setState({error:false});
+      this.setState({error:""});
       this.props.postOrder({name: this.state.name, ingredients: this.state.ingredients});
       this.clearInputs();
     } else {
-    this.setState({error:true})
+    this.setState({error:"A Name and at least one ingredient is needed to submit an order!"})
     }
   }
 
@@ -29,10 +29,12 @@ class OrderForm extends Component {
 
   handleIngredientChange = e => {
     e.preventDefault();
-    if(this.state.ingredients.filter(ingredient => ingredient === e.target.name).length > 2) {
-      return console.log('you can\'t have more than two of the same ingredient')
+    if(this.state.ingredients.filter(ingredient => ingredient === e.target.name).length >= 2) {
+      this.setState({error: "Limit of two of the same ingredient!"})
+      return
     }
-    this.setState({ ingredients:[...this.state.ingredients, e.target.name] })
+
+    this.setState({ ingredients:[...this.state.ingredients, e.target.name], error:"" })
   }
 
   clearInputs = () => {
@@ -68,7 +70,7 @@ class OrderForm extends Component {
           Submit Order
         </button>
       </form>
-      {this.state.error && <h1>A Name and at least one ingredient is needed to submit an order!</h1>}
+      {this.state.error && <h2>{this.state.error}</h2>}
       </>
     )
   }
