@@ -88,20 +88,49 @@ describe('Burrito Builder Tests', () => {
     cy.get('button').eq(0).click()
     cy.get('button').eq(12).click()
 
-    cy.get('h1').eq(1).contains('A Name and at least one ingredient is needed to submit an order!')
+    cy.get('h2').eq(0).contains('A Name and at least one ingredient is needed to submit an order!')
   })
 
   it('should get an error if there isn\'t at least one ingredient selected', () => {
     cy.get('input').type('Nice Haircut Robbie')
     cy.get('button').eq(12).click()
 
-    cy.get('h1').eq(1).contains('A Name and at least one ingredient is needed to submit an order!')
+    cy.get('h2').eq(0).contains('A Name and at least one ingredient is needed to submit an order!')
   })
 
   it('should get an error if a blank order is submitted', () => {
     cy.get('button').eq(12).click()
 
-    cy.get('h1').eq(1).contains('A Name and at least one ingredient is needed to submit an order!')
+    cy.get('h2').eq(0).contains('A Name and at least one ingredient is needed to submit an order!')
+  })
+
+  it('should get an error if more than two ingredients of the same type are added', () => {
+    cy.get('button').eq(4).click()
+    cy.get('button').eq(4).click()
+    cy.get('p').contains('Order: lettuce, lettuce')
+
+    cy.get('button').eq(4).click()
+
+    cy.get('h2').contains("Limit of two of the same ingredient!")
+    cy.get('p').contains('Order: lettuce, lettuce')
+
+  })
+
+  it('ingredient error message should dissapear after selecting a different ingredient', () => {
+    cy.get('button').eq(4).click()
+    cy.get('button').eq(4).click()
+    cy.get('p').contains('Order: lettuce, lettuce')
+
+    cy.get('button').eq(4).click()
+
+    cy.get('h2').contains("Limit of two of the same ingredient!")
+
+    cy.get('button').eq(2).click()
+
+    cy.get('h2').should("not.exist")
+
+    cy.get('p').contains('Order: lettuce, lettuce, carnitas')
+
   })
 
 })
