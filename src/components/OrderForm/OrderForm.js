@@ -6,14 +6,30 @@ class OrderForm extends Component {
     this.props = props;
     this.state = {
       name: '',
-      ingredients: []
+      ingredients: [],
+      error:false
     };
   }
 
 
   handleSubmit = e => {
     e.preventDefault();
-    this.clearInputs();
+    if(this.state.name && this.state.ingredients.length) {
+      this.setState({error:false});
+      this.props.postOrder({name: this.state.name, ingredients: this.state.ingredients});
+      this.clearInputs();
+    } else {
+    this.setState({error:true})
+    }
+  }
+
+  handleNameChange = e => {
+    this.setState({ name:e.target.value})
+  }
+
+  handleIngredientChange = e => {
+    e.preventDefault();
+    this.setState({ ingredients:[...this.state.ingredients, e.target.name] })
   }
 
   clearInputs = () => {
@@ -31,6 +47,7 @@ class OrderForm extends Component {
     });
 
     return (
+      <>
       <form>
         <input
           type='text'
@@ -48,6 +65,8 @@ class OrderForm extends Component {
           Submit Order
         </button>
       </form>
+      {this.state.error && <h1>A Name and at least one ingredient is needed to submit an order!</h1>}
+      </>
     )
   }
 }
