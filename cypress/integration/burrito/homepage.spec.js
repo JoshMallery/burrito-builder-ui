@@ -14,7 +14,7 @@ describe('Burrito Builder Tests', () => {
   })
 
   it('should have 13 buttons on the page', () => {
-    cy.get('button').should('have.length',13)
+    cy.get('button').should('have.length',17)
   })
 
   it('should have all the ingredient names on the buttons', () => {
@@ -102,6 +102,23 @@ describe('Burrito Builder Tests', () => {
     cy.get('button').eq(12).click()
 
     cy.get('h1').eq(1).contains('A Name and at least one ingredient is needed to submit an order!')
+  })
+
+})
+
+describe('Burrito Builder Delete Tests', () => {
+  it('should be able to delete an order', () => {
+    cy.intercept('http://localhost:3001/api/v1/orders', {fixture: 'orders'})
+    cy.visit('http://localhost:3000/')
+    cy.get('.order').eq(1)
+
+    cy.intercept('DELETE','http://localhost:3001/api/v1/orders/2',{status:204})
+    cy.intercept('http://localhost:3001/api/v1/orders', {fixture: 'delOrders'})
+    cy.get('button').eq(14).click()
+
+    cy.get('.order').should('have.length', 3)
+    cy.get('.order').eq(1).should('not.have','Sam')
+
   })
 
 });

@@ -11,6 +11,7 @@ class App extends Component {
       orders: []
     }
     this.postOrder = this.postOrder.bind(this)
+    this.deleteOrder = this.deleteOrder.bind(this)
   }
 
   componentDidMount() {
@@ -24,15 +25,22 @@ class App extends Component {
       .then(response => this.setState({orders:[...this.state.orders,response]}))
   }
 
+  deleteOrder(id) {
+     apiCalls.removeOrder(id)
+     .then(() => apiCalls.getOrders())
+     .then(response => this.setState({orders:response.orders}))
+       .catch(err => console.error('Error fetching:', err));
+   }
+
   render() {
     return (
       <main className="App">
         <header>
           <h1>Burrito Builder</h1>
-          <OrderForm postOrder={this.postOrder}/>
+          <OrderForm postOrder={this.postOrder} />
         </header>
 
-        <Orders orders={this.state.orders}/>
+        <Orders orders={this.state.orders} deleteOrder={this.deleteOrder}/>
       </main>
     );
   }

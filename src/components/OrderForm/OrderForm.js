@@ -29,6 +29,9 @@ class OrderForm extends Component {
 
   handleIngredientChange = e => {
     e.preventDefault();
+    if(this.state.ingredients.filter(ingredient => ingredient === e.target.name).length > 2) {
+      return console.log('you can\'t have more than two of the same ingredient')
+    }
     this.setState({ ingredients:[...this.state.ingredients, e.target.name] })
   }
 

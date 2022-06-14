@@ -14,6 +14,13 @@ const apiCalls = {
         }
     })
         .then(response => response.json())
+  },
+
+  removeOrder(id) {
+    return fetch(`http://localhost:3001/api/v1/orders/${id}`,{
+        method: 'DELETE'
+    })
+        // .then(response => console.log(response.status))
   }
 
 };
