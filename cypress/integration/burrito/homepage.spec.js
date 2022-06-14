@@ -1,6 +1,5 @@
 describe('Burrito Builder Tests', () => {
   beforeEach(() => {
-    cy.intercept('POST','http://localhost:3001/api/v1/orders', {fixture: 'post'})
     cy.intercept('http://localhost:3001/api/v1/orders', {fixture: 'orders'})
 
     cy.visit('http://localhost:3000/')
@@ -69,7 +68,8 @@ describe('Burrito Builder Tests', () => {
     cy.get('input').should('have.value','Nice Haircut Robbie')
   })
 
-  it.only('should be able to place an order', () => {
+  it('should be able to place an order', () => {
+    cy.intercept('POST','http://localhost:3001/api/v1/orders', {fixture: 'post'}).as('post')
     cy.get('button').eq(0).click()
     cy.get('button').eq(2).click()
     cy.get('button').eq(8).click()
@@ -77,10 +77,11 @@ describe('Burrito Builder Tests', () => {
 
     cy.get('button').eq(12).click()
 
-    // cy.get('.order').eq(4).contains('Peter Jones')
-    // cy.get('.order').eq(4).contains('beans')
-    // cy.get('.order').eq(4).contains('carnitas')
-    // cy.get('.order').eq(4).contains('quacamole')
+    cy.wait('@post')
+    cy.get('.order').eq(4).contains('Nice Haircut Robbie')
+    cy.get('.order').eq(4).contains('guacamole')
+    cy.get('.order').eq(4).contains('beans')
+    cy.get('.order').eq(4).contains('carnitas')
   })
 
   it('should get an error if Name is missing', () => {
